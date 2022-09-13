@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && xcopy build\\ \"E:\\Lazar\\Elfak\\4. godina\\Diplomski rad\\onlypans\\custom_functions\\local-api\\static\" /E",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
