@@ -1,11 +1,23 @@
+// import { GiBerriesBowl } from 'react-icons/gi';
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Home from './pages/Home';
+import Auth from './components/Auth';
+import User from './components/User';
+import Recipes from './components/Recipes';
+import useToken from './components/useToken';
+import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
 
 const defaultUser = { first_name: '', email: '', password: '' }
+const searchApi = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 
 function App() {
+  const { token, setToken } = useToken();
   const [users, setUser] = useState([]);
+  const [recipes, setRecipes] = useState([]);
   const [filter, setFilter] = useState('');
+  const [query, setQuery] = useState('');
   const [newUser, setNewUser] = useState(defaultUser);
   const [newUserResponse, setNewUserResponse] = useState('');
 
@@ -30,78 +42,53 @@ function App() {
     setNewUser(defaultUser);
   }
 
+  const searchRecipes = async () => {
+    const url = searchApi + query
+    const res = await fetch(url);
+    const data = await res.json();
+    setRecipes(data.meals);
+    console.log(recipes);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    searchRecipes();
+  }
+
+  // const klik = ()=>{
+  //   alert("GiBerriessss")
+  // }
+
   useEffect(() => {
     const getUsers = async() => {
       const response = await fetch(filter.length ? `https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user/${filter}` : `https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user`)
       const newUsers = await response.json();
       setUser(newUsers);
     }
+    const getRecipes = async() =>{
+      const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/recipe`)
+      const newRecipes = await response.json();
+      setRecipes(newRecipes);
+    }
 
     getUsers();
+    getRecipes();
+    //searchRecipes();
   }, [filter, newUserResponse]);
 
+  if(!token) {
+    //console.log("Token: " + token)
+    return <Auth setToken={setToken} />
+  }
+
   return (
-    <div className="App">
-      <table className='column'>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Email</th>
-            <th>Password</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length ? users.map(user => {
-            return <tr key={user.id}>
-              <td>{user.first_name}</td>
-              <td>{user.email}</td>
-              <td>{user.password}</td>
-            </tr>
-          }) : (
-            <tr>
-              <td colSpan="3">No Users Found</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      <div className='column'>
-        <form>
-          Filter Users: <input type="text" onChange={(e) => setFilter(e.currentTarget.value)} value={filter}></input>
-        </form>
-        <br />
-        <hr />
-        <br />
-        <form>
-          <table>
-            <thead>
-              <tr>
-                <th>User Name</th>
-                <th>User Email</th>
-                <th>User Password</th>
-              </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                <input type="text" onChange={(e) => setNewUser({ ...newUser, first_name: e.currentTarget.value })} value={newUser.first_name} />
-              </td>
-              <td>
-                <input type="text" onChange={(e) => setNewUser({ ...newUser, email: e.currentTarget.value })} value={newUser.email} />
-              </td>
-              <td>
-                <input type="text" onChange={(e) => setNewUser({ ...newUser, password: e.currentTarget.value })} value={newUser.password} />
-              </td>
-              <td>
-                <button onClick={addUser}>Add User</button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <br />
-          {newUserResponse}
-        </form>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="/" element={<Auth />} /> */}
+        <Route path="/home" element={<Home users={users} query={query} setQuery={setQuery} handleSubmit={handleSubmit}/>} />
+        <Route path="/recipes" element={<Recipes recipes={recipes} />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
