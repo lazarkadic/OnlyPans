@@ -1,10 +1,10 @@
 import NavBar from "./Navbar"
 import Table from "react-bootstrap/esm/Table"
 
-function Recipes({ recipes }) {
+function Recipes({ recipes, removeToken }) {
   return (
     <>
-    <NavBar></NavBar>
+    <NavBar removeToken={removeToken}></NavBar>
     <Table striped bordered hover>
       <thead>
         <tr>
