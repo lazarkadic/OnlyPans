@@ -5,7 +5,6 @@ import Home from "./Home";
 import Recipe from "./Recipe"
 import Collection from "./Collection"
 import ShopList from "./ShopList"
-import RecipeInfo from "./RecipeInfo";
 
 function Pages() {
     const { token, setToken, removeToken } = useToken();
@@ -19,7 +18,6 @@ function Pages() {
             <Routes>
                 <Route path="/" element={<Home removeToken={removeToken}/>} />
                 <Route path="/recipes" element={<Recipe removeToken={removeToken} />} />
-                <Route path="/recipes/:id" element={<RecipeInfo removeToken={removeToken} />} />
                 <Route path="/collections" element={<Collection removeToken={removeToken} />} />
                 <Route path="/shop-list" element={<ShopList removeToken={removeToken} />} />
             </Routes>

@@ -12,6 +12,8 @@ function Recipe({ removeToken }) {
     setRecipes(newRecipes);
   }
 
+  
+
   useEffect(() => {
     getRecipes();
   }, []);
@@ -27,9 +29,12 @@ function Recipe({ removeToken }) {
                 <CardItem 
                     key={recipe.id}
                     src={recipe.photo}
-                    text={recipe.title}
-                    label={recipe.author}
-                    path={recipe.id}
+                    title={recipe.title}
+                    author={recipe.author}
+                    desc={recipe.description}
+                    ingr={recipe.ingredients}
+                    inst={recipe.instructions}
+                    tags={recipe.tags}
                 />))}
         </div>
       </div>
