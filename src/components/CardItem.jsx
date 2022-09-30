@@ -54,6 +54,8 @@ function MyVerticallyCenteredModal(props) {
 const CardItem = ({ src, title, author, desc, ingr, inst, tags }) => {    
   const [modalShow, setModalShow] = useState(false);
   const tagsa = tags.split(",");
+  // const bgColor = ['danger', 'secondary', 'success', 'dark'];
+
     return (
       <>
         <div className="card">
@@ -65,7 +67,7 @@ const CardItem = ({ src, title, author, desc, ingr, inst, tags }) => {
             <div className="card-body">
               <h3>{title}</h3>              
               <button className="card-button" onClick={() => setModalShow(true)}>Instructions</button>
-              {tagsa.map((el, index) => { return <div key={index} style={{display: 'inline'}}> <Badge pill bg="warning" text="dark" >{el}</Badge> {" "}</div> })}
+              {tagsa.map((el, index) => { return <div key={index} style={{display: 'inline'}}> <Badge pill bg="warning" text='dark' >{el}</Badge> {" "}</div> })}
             </div>
             <div className="author">
               <span className="category">Made by: {author}</span>
