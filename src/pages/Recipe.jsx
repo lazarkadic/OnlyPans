@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import CardItem from '../components/CardItem';
 import { FaSearch } from 'react-icons/fa';
+import { RiArrowGoBackFill } from 'react-icons/ri'
 import Pagination from '@mui/material/Pagination';
 import "../styles/Cards.css"
 
@@ -41,6 +42,14 @@ function Recipe({ removeToken }) {
     searchRecipes();
   }
 
+  const handleBadgeClick = (el) => {
+    const pomRecipes = recipes.filter((recipe) => {
+      return recipe.tags.toString().toLowerCase().includes(el.target.textContent)
+    })
+
+    setShowRecipes(pomRecipes)
+  }
+
   useEffect(() => {
     getRecipes();
   }, []);
@@ -51,6 +60,11 @@ function Recipe({ removeToken }) {
       <div className='img-wrapper'>      
       <div className="container">
         {showRecipes ? <h3>Search for your favourite recipe!</h3> : <h3>No Recipes Yet</h3>}
+        {showRecipes.length !== recipes.length && <RiArrowGoBackFill 
+          size={30}
+          style={{cursor: 'pointer'}} 
+          onClick={() => setShowRecipes(recipes)}>
+        </RiArrowGoBackFill>}
         <form action="" onSubmit={handleSubmit}>
           <input 
             type="search" 
@@ -62,7 +76,6 @@ function Recipe({ removeToken }) {
           <FaSearch className="fa fa-search" onClick={handleSubmit}/>
         </form>
         <div className="recipes">
-          {/* {console.log("Current records: " + currentRecords + " NPages: " + nPages)} */}
           {currentRecords.length !== 0 ? currentRecords.map(recipe => (
                 <CardItem 
                     key={recipe.id}
@@ -73,14 +86,15 @@ function Recipe({ removeToken }) {
                     ingr={recipe.ingredients}
                     inst={recipe.instructions}
                     tags={recipe.tags}
+                    handleBadgeClick={handleBadgeClick}
                 />)) 
               : <h3>Sorry, we don't have that recipe yet.</h3>}
         </div>
-        <Pagination count={nPages}
+        {currentRecords.length !== 0 && <Pagination count={nPages}
           shape="rounded"
           onChange={(event, page) => {setCurrentPage(page)}}
           style={{position: 'relative', left: '40%'}}
-        />
+        />}
       </div>
       </div>
     </div>

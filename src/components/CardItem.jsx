@@ -4,11 +4,15 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
+import VerticalLinearStepper from './VerticalLinearStepper';
 
 function MyVerticallyCenteredModal(props) {
   const ingredients = props.ingr.split(",");
-  const instructions = props.inst.split(",");
-  // const tags = props.tags.split(",");
+  const instructions = props.inst.split(", ");
+  const items = [];
+  instructions.map((el, ind) => {
+    items.push({label: ind, description: el})
+  })
 
   return (
     <Modal
@@ -27,7 +31,6 @@ function MyVerticallyCenteredModal(props) {
         <p style={{ textAlign: 'left'}}>
           {props.desc}
         </p>
-        {/* {tags.map((el, index) => { return <Badge pill bg="warning" text="dark" key={index}>{el}</Badge> })} */}
       </Modal.Body>
       <hr />
       <Modal.Body style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -39,9 +42,7 @@ function MyVerticallyCenteredModal(props) {
         </div>
         <div>
           <h5 style={{fontWeight: 'bold'}}>Instructions:</h5>
-          <ListGroup variant="flush">
-            {instructions.map((el, index) => { return <ListGroup.Item key={index}>{el}</ListGroup.Item> })}
-          </ListGroup>
+          <VerticalLinearStepper steps={items}></VerticalLinearStepper>
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -51,7 +52,7 @@ function MyVerticallyCenteredModal(props) {
   );
 }
 
-const CardItem = ({ src, title, author, desc, ingr, inst, tags }) => {    
+const CardItem = ({ src, title, author, desc, ingr, inst, tags, handleBadgeClick }) => {    
   const [modalShow, setModalShow] = useState(false);
   const tagsa = tags.split(",");
   // const bgColor = ['danger', 'secondary', 'success', 'dark'];
@@ -67,7 +68,7 @@ const CardItem = ({ src, title, author, desc, ingr, inst, tags }) => {
             <div className="card-body">
               <h3>{title}</h3>              
               <button className="card-button" onClick={() => setModalShow(true)}>Instructions</button>
-              {tagsa.map((el, index) => { return <div key={index} style={{display: 'inline'}}> <Badge pill bg="warning" text='dark' >{el}</Badge> {" "}</div> })}
+              {tagsa.map((el, index) => { return <div key={index} style={{display: 'inline'}}> <Badge pill bg="warning" text='dark' style={{cursor: 'pointer'}} onClick={(el) => handleBadgeClick(el)}>{el}</Badge> {" "}</div> })}
             </div>
             <div className="author">
               <span className="category">Made by: {author}</span>
