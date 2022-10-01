@@ -98,13 +98,74 @@ function Auth({ setToken }) {
   
     if (authMode === "signin") {
       return (
+        <div>
+          <div className='img-wrapper'>
+            <div className="Auth-form-container">
+              <form className="Auth-form" onSubmit={handleSubmit}>
+                <div className="Auth-form-content">
+                  <h3 className="Auth-form-title">Sign In</h3>
+                  <div className="text-center">
+                    Not registered yet?{" "}
+                    <Button variant="outline-primary" size="sm" onClick={changeAuthMode}>Sign Up</Button>
+                  </div>
+                  <div className="form-group mt-3">
+                    <label>Email address</label>
+                    <input
+                      value={formDetails.email}
+                      type="email"
+                      className="form-control mt-1"
+                      placeholder="Enter email"
+                      onChange={(e) => onFormUpdate('email', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group mt-3">
+                    <label>Password</label>
+                    <input
+                      value={formDetails.password}
+                      type="password"
+                      className="form-control mt-1"
+                      placeholder="Enter password"
+                      onChange={(e) => onFormUpdate('password', e.target.value)}
+                    />
+                  </div>
+                  <div className="d-grid gap-2 mt-3">
+                    <button type="submit" className="btn btn-primary">
+                      {buttonText}
+                    </button>
+                  </div>
+                    <p className="text-center mt-2">
+                        Copyright &copy; 2022
+                    </p>
+                    {/* <p className="text-center mt-2">
+                        <Link to='/home'>Home</Link>
+                    </p> */}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  
+    return (
+      <div className='img-wrapper'>
         <div className="Auth-form-container">
           <form className="Auth-form" onSubmit={handleSubmit}>
             <div className="Auth-form-content">
               <h3 className="Auth-form-title">Sign In</h3>
               <div className="text-center">
-                Not registered yet?{" "}
-                <Button variant="outline-primary" size="sm" onClick={changeAuthMode}>Sign Up</Button>
+                Already registered?{" "}
+                <Button variant="outline-primary" size="sm" onClick={changeAuthMode}>Sign In</Button>
+              </div>
+              <div className="form-group mt-3">
+                <label>First Name</label>
+                <input
+                  value={formDetails.first_name}
+                  type="text"
+                  className="form-control mt-1"
+                  placeholder="e.g Jane Doe"
+                  onChange={(e) => onFormUpdate('first_name', e.target.value)}
+                />
               </div>
               <div className="form-group mt-3">
                 <label>Email address</label>
@@ -112,7 +173,7 @@ function Auth({ setToken }) {
                   value={formDetails.email}
                   type="email"
                   className="form-control mt-1"
-                  placeholder="Enter email"
+                  placeholder="Email Address"
                   onChange={(e) => onFormUpdate('email', e.target.value)}
                 />
               </div>
@@ -122,7 +183,7 @@ function Auth({ setToken }) {
                   value={formDetails.password}
                   type="password"
                   className="form-control mt-1"
-                  placeholder="Enter password"
+                  placeholder="Password"
                   onChange={(e) => onFormUpdate('password', e.target.value)}
                 />
               </div>
@@ -131,70 +192,15 @@ function Auth({ setToken }) {
                   {buttonText}
                 </button>
               </div>
-                <p className="text-center mt-2">
-                    Copyright &copy; 2022
-                </p>
-                {/* <p className="text-center mt-2">
-                    <Link to='/home'>Home</Link>
-                </p> */}
+              <p className="text-center mt-2">
+                Copyright &copy; 2022
+              </p>
+              {/* <p className="text-center mt-2">
+              <Link to='/home'>Home</Link>
+              </p> */}
             </div>
           </form>
         </div>
-      )
-    }
-  
-    return (
-      <div className="Auth-form-container">
-        <form className="Auth-form" onSubmit={handleSubmit}>
-          <div className="Auth-form-content">
-            <h3 className="Auth-form-title">Sign In</h3>
-            <div className="text-center">
-              Already registered?{" "}
-              <Button variant="outline-primary" size="sm" onClick={changeAuthMode}>Sign In</Button>
-            </div>
-            <div className="form-group mt-3">
-              <label>First Name</label>
-              <input
-                value={formDetails.first_name}
-                type="text"
-                className="form-control mt-1"
-                placeholder="e.g Jane Doe"
-                onChange={(e) => onFormUpdate('first_name', e.target.value)}
-              />
-            </div>
-            <div className="form-group mt-3">
-              <label>Email address</label>
-              <input
-                value={formDetails.email}
-                type="email"
-                className="form-control mt-1"
-                placeholder="Email Address"
-                onChange={(e) => onFormUpdate('email', e.target.value)}
-              />
-            </div>
-            <div className="form-group mt-3">
-              <label>Password</label>
-              <input
-                value={formDetails.password}
-                type="password"
-                className="form-control mt-1"
-                placeholder="Password"
-                onChange={(e) => onFormUpdate('password', e.target.value)}
-              />
-            </div>
-            <div className="d-grid gap-2 mt-3">
-              <button type="submit" className="btn btn-primary">
-                {buttonText}
-              </button>
-            </div>
-            <p className="text-center mt-2">
-              Copyright &copy; 2022
-            </p>
-            {/* <p className="text-center mt-2">
-            <Link to='/home'>Home</Link>
-            </p> */}
-          </div>
-        </form>
       </div>
     )
 }

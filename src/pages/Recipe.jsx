@@ -60,13 +60,14 @@ function Recipe({ removeToken }) {
       <div className='img-wrapper'>      
       <div className="container">
         {showRecipes ? <h3>Search for your favourite recipe!</h3> : <h3>No Recipes Yet</h3>}
-        {showRecipes.length !== recipes.length && <RiArrowGoBackFill 
+        {showRecipes.length !== recipes.length && <h6><RiArrowGoBackFill 
           size={30}
           style={{cursor: 'pointer'}} 
           onClick={() => setShowRecipes(recipes)}>
-        </RiArrowGoBackFill>}
-        <form action="" onSubmit={handleSubmit}>
+        </RiArrowGoBackFill> back to all recipes</h6>}
+        <form className='form-cards' onSubmit={handleSubmit}>
           <input 
+            className='input-cards'
             type="search" 
             value={query} 
             onChange={(event) => setQuery(event.target.value)} 
