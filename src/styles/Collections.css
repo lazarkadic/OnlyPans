@@ -1,6 +1,10 @@
 .no-collections {
     margin-top: 10px;
     width: 50%;
-    border: 1px dashed darkorange;
+    min-width: 500px;
+    border: 2px dashed darkorange;
     border-radius: 10px;
+    text-align: center;
+    margin-left: 25%;
+    padding: 15px;
 }

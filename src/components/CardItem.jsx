@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Link } from "react-router-dom";
-import Button from 'react-bootstrap/Button'
+import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Badge from 'react-bootstrap/Badge';
+import Button from 'react-bootstrap/Button';
 import VerticalLinearStepper from './VerticalLinearStepper';
 
 function MyVerticallyCenteredModal(props) {
@@ -55,7 +54,6 @@ function MyVerticallyCenteredModal(props) {
 const CardItem = ({ src, title, author, desc, ingr, inst, tags, handleBadgeClick }) => {    
   const [modalShow, setModalShow] = useState(false);
   const tagsa = tags.split(",");
-  // const bgColor = ['danger', 'secondary', 'success', 'dark'];
 
     return (
       <>
