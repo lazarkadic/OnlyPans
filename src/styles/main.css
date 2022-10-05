@@ -96,6 +96,7 @@ h3{
 		background-color: var(--mainColor);
 		transition: 1s;
 		transform: translateY(-100vh);
+		z-index: 9999;
 	}
 
 	header .responsive_nav {

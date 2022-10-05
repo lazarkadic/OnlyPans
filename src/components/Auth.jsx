@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/esm/Button';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 
 function Auth({ setToken }) {
@@ -10,7 +8,6 @@ function Auth({ setToken }) {
       password: '',
       first_name: ''
     }
-    //const navigate = useNavigate();
     const [formDetails, setFormDetails] = useState(formInitialDetails);
     const [buttonText, setButtonText] = useState('Submit');
     const [authMode, setAuthMode] = useState("signin")
@@ -44,11 +41,8 @@ function Auth({ setToken }) {
         setButtonText("Sending...");
         const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user/${formDetails.email}`);   
         const result = await response.json();   
-        //console.log(result);
         if(result.length !== 0){
-          //sessionStorage.setItem('token', JSON.stringify(result))
           setToken(result)
-          //navigate('/home')
         }
       }
 
@@ -88,7 +82,6 @@ function Auth({ setToken }) {
         //console.log(result);
         if(result.length !== 0)
           setToken(result) 
-          //navigate('/home')
       }
 
       setFormDetails(formInitialDetails);
