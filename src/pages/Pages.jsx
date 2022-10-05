@@ -4,6 +4,7 @@ import Auth from "../components/Auth";
 import Home from "./Home";
 import Recipe from "./Recipe"
 import Collection from "./Collection"
+import CollectionPage from "./CollectionPage"
 import ShopList from "./ShopList"
 
 function Pages() {
@@ -19,6 +20,7 @@ function Pages() {
                 <Route path="/" element={<Home removeToken={removeToken}/>} />
                 <Route path="/recipes" element={<Recipe removeToken={removeToken} />} />
                 <Route path="/collections" element={<Collection removeToken={removeToken} />} />
+                <Route path="/collections/page/:id" element={<CollectionPage removeToken={removeToken} />} />
                 <Route path="/shop-list" element={<ShopList removeToken={removeToken} />} />
             </Routes>
         </BrowserRouter>

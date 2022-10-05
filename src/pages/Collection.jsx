@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { BsPlusCircle } from 'react-icons/bs'
 import "../styles/Collections.css";
+import { Link } from 'react-router-dom';
 
 
 function Collection({ removeToken }) {
@@ -91,11 +92,12 @@ function Collection({ removeToken }) {
               </aside>
               <article className='col-article'>
                 {collections.map((el) => {
+                  let url = '/collections/page/' + el.id;
                   return <div key={el.id} className='col-div' style={{ backgroundColor: el.color, opacity: '0.9' }}>
-                    <a href="" style={{ textDecoration: 'none', color: 'white', textShadow: '2px 2px 4px #000000' }}>
+                    <Link to={url} style={{ textDecoration: 'none', color: 'white', textShadow: '2px 2px 4px #000000' }}>
                       <h2 className='left-style'>{el.name}</h2>
                       <p className='left-style'>{el.description}</p>
-                    </a>
+                    </Link>
                   </div>
                 })}
               </article>
