@@ -5,8 +5,15 @@
     border: 2px dashed darkorange;
     border-radius: 10px;
     text-align: center;
-    margin-left: 25%;
+    margin-left: auto;
+    margin-right: auto;
     padding: 15px;
+}
+
+@media only screen and (max-width: 720px) {
+    .no-collections {
+        margin-left: 0%;
+    }
 }
 
 .has-collections {
@@ -45,7 +52,7 @@
         linear-gradient(rgba(200, 0, 0, .5) 50%, transparent 0);
     background-size: 30px 30px; */
     /* background-image: repeating-linear-gradient(45deg, #004C66, #004C66 1em, #008C74 1em, #008C74 50%); */
-    
+
     /* background-size: 2em 2em;
     style={{backgroundImage: `repeating-linear-gradient(${ind%2 === 0 && `-` }45deg, ${el.color}, ${el.color} 1em, #8a8080 1em, #8a8080 50%)`, opacity: '0.9'}} */
 }

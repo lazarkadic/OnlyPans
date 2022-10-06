@@ -1,0 +1,31 @@
+.img-details {
+    width: 100%;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+    height: 200px;
+    border-radius: 10px;
+    min-width: 500px;
+    color: whitesmoke;
+    text-shadow: 2px 2px 4px #000000;
+    padding-top: 30px;
+}
+
+.card-button-edit {
+    display: block;
+    background-color: #1fcb8c;
+    color: whitesmoke;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+}
+
+a:hover {
+    color: whitesmoke;
+}
+
+.card-button-edit:hover {
+    box-shadow: 0px 13.5px 27px -5.4px rgba(50, 50, 93, 0.25), 0px 8.1px 16.2px -8.1px rgba(0, 0, 0, 0.3);
+}
