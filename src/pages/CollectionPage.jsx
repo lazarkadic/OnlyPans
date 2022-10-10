@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "../styles/CollectionPage.css";
+import { dialogClasses } from '@mui/material';
 
 function CollectionPage({ removeToken }) {
     const firebaseConfig = {
@@ -29,7 +30,7 @@ function CollectionPage({ removeToken }) {
         id: '',
         name: '',
         description: '',
-        color: '',
+        color: '#29335c',
         user_id: JSON.parse(localStorage.getItem('token'))[0].id
     }
     const formAddInitialDetails = {
@@ -45,6 +46,7 @@ function CollectionPage({ removeToken }) {
     }
 
     const [collections, setCollections] = useState({});
+    const [recipes, setRecipes] = useState({});
     const [editModalShow, setEditModalShow] = useState(false);
     const [editFormDetails, setEditFormDetails] = useState(formInitialDetails);
     const [addModalShow, setAddModalShow] = useState(false);
@@ -66,6 +68,23 @@ function CollectionPage({ removeToken }) {
             'color': newCollections[0].color,
             'recipes_id': newCollections[0].recipes_id ? newCollections[0].recipes_id : []
         })
+
+        const responseRecipes = await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/recipe/ids', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                operation: 'search_by_hash',
+                schema: 'onlypans',
+                table: 'recipe',
+                hash_values: newCollections[0].recipes_id,
+                get_attributes: ["*"]
+            })
+        });
+        const newRecipes = await responseRecipes.json();
+        console.log(newRecipes)
+        setRecipes(newRecipes);
     };
 
     useEffect(() => {
@@ -188,14 +207,14 @@ function CollectionPage({ removeToken }) {
         uploadBytes(imagesRef, addFormDetails.photo).then((snapshot) => {
             console.log('Uploaded a blob or file!');
             getDownloadURL(ref(storage, `recipeImages/${addFormDetails.title}`))
-            .then((url) => {
-                // `url` is the download URL for 'images/stars.jpg'
-                data.photo = url
-            })
-            .catch((error) => {
-                // Handle any errors
-                console.log(error)
-            });
+                .then((url) => {
+                    // `url` is the download URL for 'images/stars.jpg'
+                    data.photo = url
+                })
+                .catch((error) => {
+                    // Handle any errors
+                    console.log(error)
+                });
         });
 
         // LOADING KRUZIC
@@ -265,6 +284,15 @@ function CollectionPage({ removeToken }) {
                                     <button className="card-button" >Find recipe</button>
                                 </div>
                             </div>}
+                        {(collections.recipes_id != null && collections.recipes_id.length > 0) &&
+                            <div className='collection-recipes-div'>
+                                {recipes.length && recipes.map(element => {
+                                    return <div key={element.id} className='collection-recipes'>
+                                        <h4 style={{textAlign: 'left'}}>{element.title}</h4>
+                                        <p style={{textAlign: 'left'}}>{element.description}</p>
+                                    </div>
+                                })}
+                            </div>}
                     </div>
 
                     {/* EDIT COLLECTION MODAL */}
@@ -307,7 +335,7 @@ function CollectionPage({ removeToken }) {
                                         onChange={(e) => onEditFormUpdate('color', e.target.value)}
                                     />
                                 </Form.Group>
-                                {/* {console.log(formDetails)} */}
+                                {/* {console.log(editFormDetails)} */}
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
@@ -366,11 +394,12 @@ function CollectionPage({ removeToken }) {
                                     controlId="exampleForm.ControlTextarea1"
                                 >
                                     <Form.Label>Instructions <small>(comma separated instructions)</small></Form.Label>
-                                    <Form.Control
+                                    <textarea
                                         value={addFormDetails.instructions}
-                                        type="text"
+                                        type="textarea"
                                         placeholder="Boil eggs, fry bacon, add salt and pepper..."
                                         onChange={(e) => onAddFormUpdate('instructions', e.target.value)}
+                                        className='form-control'
                                     />
                                 </Form.Group>
                                 <div style={{ display: 'flex' }}>
@@ -385,7 +414,7 @@ function CollectionPage({ removeToken }) {
                                             type="file"
                                             placeholder="Low fat recipes"
                                             onChange={(e) => onAddFormUpdate('photo', e.target.files[0])}
-                                            style={{ width: 'auto', marginRight: '10px' }}
+                                            style={{ width: '200px', marginRight: '10px' }}
                                         />
                                     </Form.Group>
                                     <Form.Group
