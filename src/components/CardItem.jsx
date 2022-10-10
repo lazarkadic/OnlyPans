@@ -10,7 +10,7 @@ function MyVerticallyCenteredModal(props) {
   const instructions = props.inst.split(", ");
   const items = [];
   instructions.map((el, ind) => {
-    items.push({label: ind, description: el})
+    return items.push({label: ind, description: el})
   })
 
   return (
@@ -44,14 +44,15 @@ function MyVerticallyCenteredModal(props) {
           <VerticalLinearStepper steps={items}></VerticalLinearStepper>
         </div>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer style={{justifyContent: 'space-between'}}>
+        <p style={{color: '#688dc4'}}>Created on {new Intl.DateTimeFormat('sr', { year: 'numeric', day: '2-digit', month: '2-digit' }).format(props.createdat)}</p>
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
   );
 }
 
-const CardItem = ({ src, title, author, desc, ingr, inst, tags, handleBadgeClick }) => {    
+const CardItem = ({ src, title, author, desc, ingr, inst, tags, createdat, handleBadgeClick }) => {    
   const [modalShow, setModalShow] = useState(false);
   const tagsa = tags.split(",");
 
@@ -80,6 +81,7 @@ const CardItem = ({ src, title, author, desc, ingr, inst, tags, handleBadgeClick
           ingr={ingr}
           inst={inst}
           tags={tags}
+          createdat={createdat}
         />
       </>
     )

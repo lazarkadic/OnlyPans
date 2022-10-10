@@ -2,12 +2,60 @@ import Navbar from '../components/Navbar';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import ListGroup from 'react-bootstrap/ListGroup';
+import VerticalLinearStepper from '../components/VerticalLinearStepper';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "../styles/CollectionPage.css";
-import { dialogClasses } from '@mui/material';
+
+function MyVerticallyCenteredModal(props) {
+    const ingredients = props.ingr.split(",");
+    const instructions = props.inst.split(", ");
+    const items = [];
+    instructions.map((el, ind) => {
+        return items.push({ label: ind, description: el })
+    })
+
+    return (
+        <Modal
+            {...props}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    {props.title}
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <h5 style={{ fontWeight: 'bold' }}>Description:</h5>
+                <p style={{ textAlign: 'left' }}>
+                    {props.desc}
+                </p>
+            </Modal.Body>
+            <hr />
+            <Modal.Body style={{ display: 'flex', justifyContent: 'space-around' }}>
+                <div>
+                    <h5 style={{ fontWeight: 'bold' }}>Ingredients:</h5>
+                    <ListGroup variant="flush">
+                        {ingredients.map((el, index) => { return <ListGroup.Item key={index}>{el}</ListGroup.Item> })}
+                    </ListGroup>
+                </div>
+                <div>
+                    <h5 style={{ fontWeight: 'bold' }}>Instructions:</h5>
+                    <VerticalLinearStepper steps={items}></VerticalLinearStepper>
+                </div>
+            </Modal.Body>
+            <Modal.Footer style={{ justifyContent: 'space-between' }}>
+                <p style={{ color: '#688dc4' }}>Created on {new Intl.DateTimeFormat('sr', { year: 'numeric', day: '2-digit', month: '2-digit' }).format(props.createdat)}</p>
+                <Button onClick={props.onHide}>Close</Button>
+            </Modal.Footer>
+        </Modal>
+    );
+}
 
 function CollectionPage({ removeToken }) {
     const firebaseConfig = {
@@ -44,9 +92,20 @@ function CollectionPage({ removeToken }) {
         time: '',
         user_id: JSON.parse(localStorage.getItem('token'))[0].id
     }
+    const showModalDefault = {
+        title: '',
+        description: '',
+        ingredients: '',
+        instructions: '',
+        author: '',
+        tags: '',
+        __createdtime__: ''
+    }
 
     const [collections, setCollections] = useState({});
     const [recipes, setRecipes] = useState({});
+    const [showRecipe, setShowRecipe] = useState(showModalDefault);
+    const [modalShow, setModalShow] = useState(false);
     const [editModalShow, setEditModalShow] = useState(false);
     const [editFormDetails, setEditFormDetails] = useState(formInitialDetails);
     const [addModalShow, setAddModalShow] = useState(false);
@@ -58,7 +117,6 @@ function CollectionPage({ removeToken }) {
     const getCollections = async () => {
         const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections/page/${id}`)
         const newCollections = await response.json();
-        // console.log(newCollections[0])
         setCollections(newCollections[0]);
         setEditFormDetails({
             ...editFormDetails,
@@ -81,9 +139,10 @@ function CollectionPage({ removeToken }) {
                 hash_values: newCollections[0].recipes_id,
                 get_attributes: ["*"]
             })
+        }).catch((error) => {
+            console.log(error);
         });
         const newRecipes = await responseRecipes.json();
-        console.log(newRecipes)
         setRecipes(newRecipes);
     };
 
@@ -93,6 +152,13 @@ function CollectionPage({ removeToken }) {
 
     function timeout(delay) {
         return new Promise(res => setTimeout(res, delay));
+    }
+
+    // RECIPE MODAL OPEN
+    const openModal = (id) => {
+        const recipe = recipes.find(el => el.id == id)
+        setShowRecipe(recipe);
+        setModalShow(true);
     }
 
     // EDIT COLLECTION MODAL INPUTS
@@ -281,19 +347,29 @@ function CollectionPage({ removeToken }) {
                                 <p>Create a new recipe, or add an existing one from its page.</p>
                                 <div style={{ display: 'flex' }}>
                                     <button className="card-button" style={{ marginRight: '10px' }} onClick={() => setAddModalShow(true)}>New recipe</button>
-                                    <button className="card-button" >Find recipe</button>
+                                    <Link to='/recipes' className="card-button" >Find recipe</Link>
                                 </div>
                             </div>}
                         {(collections.recipes_id != null && collections.recipes_id.length > 0) &&
                             <div className='collection-recipes-div'>
                                 {recipes.length && recipes.map(element => {
-                                    return <div key={element.id} className='collection-recipes'>
-                                        <h4 style={{textAlign: 'left'}}>{element.title}</h4>
-                                        <p style={{textAlign: 'left'}}>{element.description}</p>
+                                    return <div key={element.id} className='collection-recipes' onClick={() => openModal(element.id)}>
+                                        <h4 style={{ textAlign: 'left' }}>{element.title}</h4>
+                                        <p style={{ textAlign: 'left' }}>{element.description}</p>
                                     </div>
                                 })}
                             </div>}
                     </div>
+                    <MyVerticallyCenteredModal
+                        show={modalShow}
+                        onHide={() => setModalShow(false)}
+                        title={showRecipe.title}
+                        desc={showRecipe.description}
+                        ingr={showRecipe.ingredients}
+                        inst={showRecipe.instructions}
+                        tags={showRecipe.tags}
+                        createdat={showRecipe.__createdtime__}
+                    />
 
                     {/* EDIT COLLECTION MODAL */}
                     <Modal show={editModalShow} onHide={() => setEditModalShow(false)}>
@@ -453,7 +529,7 @@ function CollectionPage({ removeToken }) {
                                         <Form.Control
                                             value={addFormDetails.time}
                                             type="text"
-                                            placeholder="15 minutes"
+                                            placeholder="In minutes"
                                             onChange={(e) => onAddFormUpdate('time', e.target.value)}
                                             style={{ width: 'auto' }}
                                         />

@@ -87,6 +87,7 @@ function Recipe({ removeToken }) {
                     ingr={recipe.ingredients}
                     inst={recipe.instructions}
                     tags={recipe.tags}
+                    createdat={recipe.__createdtime__}
                     handleBadgeClick={handleBadgeClick}
                 />)) 
               : <h3>Sorry, we don't have that recipe yet.</h3>}
