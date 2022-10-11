@@ -18,6 +18,29 @@ function MyVerticallyCenteredModal(props) {
         return items.push({ label: ind, description: el })
     })
 
+    const removeFromCollection = async (id, recipes) => {
+        if (recipes != null) {
+            recipes.pop(`${props.id}`)
+            const editCollection = {
+                id: id,
+                recipes_id: recipes
+            }
+
+            await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    operation: 'update',
+                    schema: 'onlypans',
+                    table: 'collections',
+                    records: [editCollection]
+                })
+            });
+        }
+    }
+
     return (
         <Modal
             {...props}
@@ -93,6 +116,7 @@ function CollectionPage({ removeToken }) {
         user_id: JSON.parse(localStorage.getItem('token'))[0].id
     }
     const showModalDefault = {
+        id: '',
         title: '',
         description: '',
         ingredients: '',
@@ -369,6 +393,7 @@ function CollectionPage({ removeToken }) {
                         inst={showRecipe.instructions}
                         tags={showRecipe.tags}
                         createdat={showRecipe.__createdtime__}
+                        id={showRecipe.id}
                     />
 
                     {/* EDIT COLLECTION MODAL */}

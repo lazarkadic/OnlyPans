@@ -129,9 +129,6 @@ function Auth({ setToken }) {
                     <p className="text-center mt-2">
                         Copyright &copy; 2022
                     </p>
-                    {/* <p className="text-center mt-2">
-                        <Link to='/home'>Home</Link>
-                    </p> */}
                 </div>
               </form>
             </div>
@@ -156,7 +153,7 @@ function Auth({ setToken }) {
                   value={formDetails.first_name}
                   type="text"
                   className="form-control mt-1"
-                  placeholder="e.g Jane Doe"
+                  placeholder="e.g Jane"
                   onChange={(e) => onFormUpdate('first_name', e.target.value)}
                 />
               </div>
@@ -188,9 +185,6 @@ function Auth({ setToken }) {
               <p className="text-center mt-2">
                 Copyright &copy; 2022
               </p>
-              {/* <p className="text-center mt-2">
-              <Link to='/home'>Home</Link>
-              </p> */}
             </div>
           </form>
         </div>

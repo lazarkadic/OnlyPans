@@ -9,16 +9,24 @@ import "../styles/Cards.css"
 
 function Recipe({ removeToken }) {
   const [recipes, setRecipes] = useState([]);
+  const [collections, setCollections] = useState([]);
   const [showRecipes, setShowRecipes] = useState([]);
   const [query, setQuery] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(5);
+  const [recordsPerPage] = useState(8);
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = showRecipes.slice(indexOfFirstRecord, indexOfLastRecord);
   const nPages = Math.ceil(showRecipes.length / recordsPerPage)
 
+  const getCollections = async () => {
+    const tokenString = localStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections/${userToken[0].id}`)
+    const newCollections = await response.json();
+    setCollections(newCollections);
+  };
 
   const getRecipes = async() => {
     const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/recipe`)
@@ -32,6 +40,7 @@ function Recipe({ removeToken }) {
       return recipe.title.toString().toLowerCase().includes(query.toLowerCase())
     })
 
+    setCurrentPage(1);
     setShowRecipes(pomRecipes)
     setQuery('')
   }
@@ -47,11 +56,13 @@ function Recipe({ removeToken }) {
       return recipe.tags.toString().toLowerCase().includes(el.target.textContent)
     })
 
+    setCurrentPage(1);
     setShowRecipes(pomRecipes)
   }
 
   useEffect(() => {
     getRecipes();
+    getCollections();
   }, []);
 
   return (
@@ -88,6 +99,8 @@ function Recipe({ removeToken }) {
                     inst={recipe.instructions}
                     tags={recipe.tags}
                     createdat={recipe.__createdtime__}
+                    collections={collections}
+                    id={recipe.id}
                     handleBadgeClick={handleBadgeClick}
                 />)) 
               : <h3>Sorry, we don't have that recipe yet.</h3>}
