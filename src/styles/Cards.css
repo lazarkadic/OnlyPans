@@ -109,6 +109,22 @@ input:focus {
   box-shadow: 0px 13.5px 27px -5.4px rgba(50, 50, 93, 0.25), 0px 8.1px 16.2px -8.1px rgba(0, 0, 0, 0.3);
 }
 
+.ingredients-list:hover .pin-icon {
+  opacity:1 !important;
+}
+
+.pin-icon {
+  margin-left: 10px;
+  opacity: 0;
+  transition: opacity 256ms cubic-bezier(.55, .06, .68, .19);
+}
+
+.pin-icon-set {
+  margin-left: 10px;
+  opacity: 1;
+  /* transition: opacity 256ms cubic-bezier(.55, .06, .68, .19); */
+}
+
 .collection-button {
   border: 2px solid #1565c0;
   color: #1565c0;

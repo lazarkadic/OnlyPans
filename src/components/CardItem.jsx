@@ -4,16 +4,22 @@ import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import VerticalLinearStepper from './VerticalLinearStepper';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import { BsFillPinAngleFill } from 'react-icons/bs';
 
 function MyVerticallyCenteredModal(props) {
-  const ingredients = props.ingr.split(",");
+  const ingredients = props.ingr.split(", ");
   const instructions = props.inst.split(", ");
+  const userToken = JSON.parse(localStorage.getItem('token'));
   const items = [];
   instructions.map((el, ind) => {
     return items.push({ label: ind, description: el })
   })
 
   const addToCollection = async (id, recipes) => {
+    if (recipes == null)
+      recipes = []
     recipes.push(props.id)
     const editCollection = {
       id: id,
@@ -21,40 +27,79 @@ function MyVerticallyCenteredModal(props) {
     }
 
     await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                operation: 'update',
-                schema: 'onlypans',
-                table: 'collections',
-                records: [editCollection]
-            })
-        });
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        operation: 'update',
+        schema: 'onlypans',
+        table: 'collections',
+        records: [editCollection]
+      })
+    });
+  }
+
+  function removeElement(array, elem) {
+    var index = array.indexOf(elem);
+    if (index > -1) {
+      array.splice(index, 1);
+    }
   }
 
   const removeFromCollection = async (id, recipes) => {
-    if(recipes != null){
-      recipes.pop(`${props.id}`)
+    if (recipes != null) {
+      removeElement(recipes, `${props.id}`)
       const editCollection = {
         id: id,
         recipes_id: recipes
       }
-  
+
       await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  operation: 'update',
-                  schema: 'onlypans',
-                  table: 'collections',
-                  records: [editCollection]
-              })
-          });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          operation: 'update',
+          schema: 'onlypans',
+          table: 'collections',
+          records: [editCollection]
+        })
+      });
     }
+  }
+
+  const addToShopList = async (event, el) => {
+
+    event.currentTarget.classList.remove('pin-icon');
+    event.currentTarget.classList.add('pin-icon-set');
+
+    const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user/id/${userToken[0].id}`)
+    const newShopList = await response.json();
+
+    if (newShopList[0].shop_list == null)
+      newShopList[0].shop_list = [];
+
+    newShopList[0].shop_list.push(el)
+
+    const data = {
+      id: userToken[0].id,
+      shop_list: newShopList[0].shop_list
+    }
+
+    await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        operation: 'update',
+        schema: 'onlypans',
+        table: 'user',
+        records: [data]
+      })
+    });
   }
 
   return (
@@ -79,9 +124,8 @@ function MyVerticallyCenteredModal(props) {
           <h5 style={{ fontWeight: 'bold' }}>Collections:</h5>
           <div style={{ display: 'flex' }}>
             {props.collections.map((el) => {
-
               if (el.recipes_id != null && el.recipes_id.length > 0 && el.recipes_id.includes(`${props.id}`)) {
-                return <button key={el.id} className="collection-button" style={{backgroundColor: '#1565c0', color: 'white'}} onClick={() => removeFromCollection(el.id, el.recipes_id)}>{el.name}</button>
+                return <button key={el.id} className="collection-button" style={{ backgroundColor: '#1565c0', color: 'white' }} onClick={() => removeFromCollection(el.id, el.recipes_id)}>{el.name}</button>
               } else {
                 return <button key={el.id} className="collection-button" onClick={() => addToCollection(el.id, el.recipes_id)}>{el.name}</button>
               }
@@ -95,7 +139,16 @@ function MyVerticallyCenteredModal(props) {
         <div>
           <h5 style={{ fontWeight: 'bold' }}>Ingredients:</h5>
           <ListGroup variant="flush">
-            {ingredients.map((el, index) => { return <ListGroup.Item key={index}>{el}</ListGroup.Item> })}
+            {ingredients.map((el, index) => {
+              return <ListGroup.Item key={index} className='ingredients-list'>{el}
+              {}
+                <OverlayTrigger
+                  placement="right"
+                  overlay={<Tooltip id="tooltip-disabled">Add to your shop list!</Tooltip>}>
+                  <span><BsFillPinAngleFill color='red' className='pin-icon' onClick={(event) => addToShopList(event, el)} /></span>
+                </OverlayTrigger>
+              </ListGroup.Item>
+            })}
           </ListGroup>
         </div>
         <div>

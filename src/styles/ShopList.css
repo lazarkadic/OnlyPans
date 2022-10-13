@@ -1,0 +1,65 @@
+.document {
+    display: flex;
+    margin-top: 30px;
+}
+
+.main-shoplist {
+    border-radius: 15px;
+    box-shadow: 0px 6.3px 12.5px -2.5px rgba(50, 50, 93, 0.25), 0px 3.8px 7.5px -3.7px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    width: 50%;
+    margin: 20px auto 60%;
+    min-width: 450px;
+    max-width: 34rem;
+    padding: 2rem;
+
+}
+
+.h1-shoplist {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #e0e6ed;
+    color: var(--secondaryColor);
+}
+
+.noelement-shoplist {
+    padding: 2rem;
+    border-radius: 10px;
+    border-color: #e0e6ed;
+    border-width: 2px;
+    border-style: dashed;
+    text-align: center;
+}
+
+.form-input-sl {
+    border-width: 0px 0px 2px;
+    border-color: #e0e6ed;
+    border-radius: 0px;
+    background: transparent;
+    padding-left: 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    flex: 1 1 auto;
+}
+
+.item-div {
+    display: flex;
+    cursor: pointer;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.item-div:hover .delete-icon{
+    opacity:1 !important
+}
+
+.delete-icon {
+    opacity: 0;
+    transition: opacity 256ms cubic-bezier(.55, .06, .68, .19);
+}
+
+/* .recipe__ingredients li:hover .add-grocery {
+    opacity:1 !important
+} */
