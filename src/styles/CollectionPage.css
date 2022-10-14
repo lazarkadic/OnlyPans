@@ -55,6 +55,10 @@ a:hover {
     cursor: pointer;
 }
 
+.collection-recipes:hover .delete-icon{
+    opacity:1 !important
+}
+
 .spinner {
     position: absolute;
     left: 50%;

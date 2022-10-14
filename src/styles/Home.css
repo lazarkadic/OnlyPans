@@ -1,16 +1,13 @@
 .reflected {
     display: inline-block;
     width: max-content;
-    padding: 0 10px;
-    position: absolute;
-    left: 40%;
-    top: 45%;
+    margin-top: -10px;
 }
 
 .reflected>* {
     font-size: 5rem;
     font-weight: 700;
-    color: #dc5c5c;
+    color: #ffffff;
 }
 
 .reflected> :last-child {
@@ -19,4 +16,12 @@
     mask-image: linear-gradient(transparent 50%, white 90%);
     -webkit-mask-image: linear-gradient(transparent 50%, white 90%);
     opacity: 0.72;
+}
+
+.img-logo {
+    margin-top: 130px;
+}
+
+.img-container-bg {
+    background-position: center;
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import Button from 'react-bootstrap/esm/Button';
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/esm/Button';
+import bcrypt from 'bcryptjs';
 
 
 function Auth({ setToken }) {
@@ -42,8 +43,15 @@ function Auth({ setToken }) {
       setButtonText("Sending...");
       const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user/${formDetails.email}`);
       const result = await response.json();
-      if (result.length !== 0) {
+      const compare = await bcrypt.compare(formDetails.password, result[0].password)
+      if (compare) {
         setToken(result)
+      }
+      else {
+        setButtonText("Submit");
+        setFormDetails(formInitialDetails);
+        alert('Wrong credentials.')
+        return
       }
     }
 
@@ -66,6 +74,12 @@ function Auth({ setToken }) {
 
       setButtonText("Sending...");
 
+      // console.log("Plain text: " + formDetails.password)
+
+      formDetails.password = await bcrypt.hash(formDetails.password, 10);
+
+      // console.log("Crypt text: " + formDetails.password)
+
       const response = await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user', {
         method: 'POST',
         headers: {
@@ -80,9 +94,15 @@ function Auth({ setToken }) {
       });
 
       const result = await response.json();
-      //console.log(result);
+      console.log(result);
+      const token = {
+        id: result.inserted_hashes[0],
+        email: formDetails.email,
+        password: formDetails.password,
+        first_name: formDetails.first_name
+      }
       if (result.length !== 0)
-        setToken(result)
+        setToken([token])
     }
 
     setFormDetails(formInitialDetails);
