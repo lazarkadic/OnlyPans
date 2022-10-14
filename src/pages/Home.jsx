@@ -1,14 +1,19 @@
 import Navbar from '../components/Navbar';
-import bg3 from "../assets/img/bg3.jpg";
+import bg1 from "../assets/img/bg1.jpg";
+import "../styles/Home.css";
 
 
 function Home({ removeToken }) {
   return (
     <>
-      <div>
-        <Navbar active={'home'} removeToken={removeToken}/>
-        <div style={myStyle}>
-          <h3>WELCOME TO HOME PAGE</h3>
+      <div style={myStyle}>
+        <Navbar active={'home'} removeToken={removeToken} style={''} />
+        <div >
+          {/* <h3 style={{color: 'whitesmoke'}}>WELCOME TO HOME PAGE</h3> */}
+          <div className='reflected'>
+            <div>Welcome</div>
+            <div>Welcome</div>
+          </div>
         </div>
       </div>
     </>
@@ -16,8 +21,8 @@ function Home({ removeToken }) {
 }
 
 const myStyle={
-  backgroundImage:`url(${bg3})`,
-  height:'100vh',
+  backgroundImage:`url(${bg1})`,
+  height:'50vh',
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
 };

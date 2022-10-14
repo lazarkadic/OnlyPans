@@ -71,9 +71,9 @@ function Collection({ removeToken }) {
   }
 
   return (
-    <div>
-      <Navbar active={'collection'} removeToken={removeToken} />
-      <div className='img-wrapper'>
+    <div className='img-wrapper'>
+      <Navbar active={'collection'} removeToken={removeToken} style={'30px'}/>
+      {/* <div className='img-wrapper'> */}
         <div className="container">
           {collections.length === 0 &&
             <div className='no-collections'>
@@ -155,7 +155,7 @@ function Collection({ removeToken }) {
             </Modal.Footer>
           </Modal>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   )
 }

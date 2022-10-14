@@ -66,9 +66,9 @@ function Recipe({ removeToken }) {
   }, []);
 
   return (
-    <div>
-      <Navbar active={'recipes'} removeToken={removeToken}/>
-      <div className='img-wrapper'>      
+    <div className='img-wrapper'>
+      <Navbar active={'recipes'} removeToken={removeToken} style={'30px'} />
+      {/* <div className='img-wrapper'>       */}
       <div className="container">
         {showRecipes ? <h3>Search for your favourite recipe!</h3> : <h3>No Recipes Yet</h3>}
         {showRecipes.length !== recipes.length && <h6><RiArrowGoBackFill 
@@ -111,7 +111,7 @@ function Recipe({ removeToken }) {
           style={{position: 'relative', left: '40%'}}
         />}
       </div>
-      </div>
+      {/* </div> */}
     </div>
   )
 }

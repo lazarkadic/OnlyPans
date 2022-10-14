@@ -1,0 +1,22 @@
+.reflected {
+    display: inline-block;
+    width: max-content;
+    padding: 0 10px;
+    position: absolute;
+    left: 40%;
+    top: 45%;
+}
+
+.reflected>* {
+    font-size: 5rem;
+    font-weight: 700;
+    color: #dc5c5c;
+}
+
+.reflected> :last-child {
+    transform:
+        rotateX(180deg) translateY(43px);
+    mask-image: linear-gradient(transparent 50%, white 90%);
+    -webkit-mask-image: linear-gradient(transparent 50%, white 90%);
+    opacity: 0.72;
+}

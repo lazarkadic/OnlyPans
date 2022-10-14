@@ -1,14 +1,22 @@
+import * as React from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import Navbar from '../components/Navbar';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import VerticalLinearStepper from '../components/VerticalLinearStepper';
+import Spinner from 'react-bootstrap/Spinner';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "../styles/CollectionPage.css";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
 function MyVerticallyCenteredModal(props) {
     const ingredients = props.ingr.split(",");
@@ -82,12 +90,12 @@ function MyVerticallyCenteredModal(props) {
 
 function CollectionPage({ removeToken }) {
     const firebaseConfig = {
-        apiKey: "AIzaSyAIdmXdNZtCpoEFbd2cJpky-JK3jMTv5n0",
-        authDomain: "harperdb-a2c72.firebaseapp.com",
-        projectId: "harperdb-a2c72",
-        storageBucket: "harperdb-a2c72.appspot.com",
-        messagingSenderId: "355885458807",
-        appId: "1:355885458807:web:3502a7e3dfbf5b6b5aed72"
+        apiKey: process.env.REACT_APP_API_KEY,
+        authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+        projectId: process.env.REACT_APP_PROJECT_ID,
+        storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+        messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+        appId: process.env.REACT_APP_APP_ID
     };
 
     // Initialize Firebase
@@ -134,7 +142,19 @@ function CollectionPage({ removeToken }) {
     const [editFormDetails, setEditFormDetails] = useState(formInitialDetails);
     const [addModalShow, setAddModalShow] = useState(false);
     const [addFormDetails, setAddFormDetails] = useState(formAddInitialDetails);
+    const [spinner, setSpinner] = useState(0);
+    const [open, setOpen] = useState(false);
     let { id } = useParams();
+
+
+    // SNACKBAR CLOSE HANDLE
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
 
 
     // GET COLLCETION WITH ID = id
@@ -307,8 +327,10 @@ function CollectionPage({ removeToken }) {
                 });
         });
 
-        // LOADING KRUZIC
+        // LOADING
+        setSpinner(1);
         await timeout(4000);
+
 
         await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/recipe', {
             method: 'POST',
@@ -344,14 +366,17 @@ function CollectionPage({ removeToken }) {
             })
         });
 
+        setSpinner(0);
+
         setAddFormDetails(formAddInitialDetails);
         getCollections();
+        setOpen(true);
     }
 
     return (
-        <div>
-            <Navbar active={'collection'} removeToken={removeToken} />
-            <div className='img-wrapper'>
+        <div className='img-wrapper'>
+            <Navbar active={'collection'} removeToken={removeToken} style={'30px'} />
+            {/* <div className='img-wrapper'> */}
                 <div className="container">
                     <div className='img-details' style={{ backgroundColor: collections.color }}>
                         <p style={{ fontSize: '52px' }}>{collections.name}</p>
@@ -383,6 +408,12 @@ function CollectionPage({ removeToken }) {
                                     </div>
                                 })}
                             </div>}
+                        <Spinner animation="border" variant="primary" className='spinner' style={{ opacity: `${spinner}` }} />
+                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                                New recipe created!
+                            </Alert>
+                        </Snackbar>
                     </div>
                     <MyVerticallyCenteredModal
                         show={modalShow}
@@ -573,7 +604,7 @@ function CollectionPage({ removeToken }) {
                         </Modal.Footer>
                     </Modal>
                 </div>
-            </div>
+            {/* </div> */}
         </div>
     )
 }

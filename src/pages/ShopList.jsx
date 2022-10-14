@@ -100,9 +100,9 @@ function ShopList({ removeToken }) {
   }
 
   return (
-    <div>
-      <Navbar active={'shop-list'} removeToken={removeToken} />
-      <div className='img-wrapper'>
+    <div className='img-wrapper'>
+      <Navbar active={'shop-list'} removeToken={removeToken} style={'30px'}/>
+      {/* <div className='img-wrapper'> */}
         <div className='document'>
           <main className='main-shoplist'>
             <h1 className='h1-shoplist'><strong>Shop list</strong></h1>
@@ -147,7 +147,7 @@ function ShopList({ removeToken }) {
             }
           </main>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   )
 }

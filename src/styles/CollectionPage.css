@@ -54,3 +54,9 @@ a:hover {
 .collection-recipes:hover {
     cursor: pointer;
 }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
