@@ -145,6 +145,11 @@ input:focus {
   cursor: pointer;
 }
 
+.active-collcetion-button {
+  background-color: #1565c0;
+  color: #fff;
+}
+
 .form-cards {
   position: relative;
   top: 3%;

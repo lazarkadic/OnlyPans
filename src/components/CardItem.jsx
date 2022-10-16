@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -12,12 +12,13 @@ function MyVerticallyCenteredModal(props) {
   const ingredients = props.ingr.split(", ");
   const instructions = props.inst.split(", ");
   const userToken = JSON.parse(localStorage.getItem('token'));
+  const buttonRef = useRef();
   const items = [];
   instructions.map((el, ind) => {
     return items.push({ label: ind, description: el })
   })
 
-  const addToCollection = async (id, recipes) => {
+  const addToCollection = async (event, id, recipes) => {
     if (recipes == null)
       recipes = []
     recipes.push(props.id)
@@ -38,6 +39,9 @@ function MyVerticallyCenteredModal(props) {
         records: [editCollection]
       })
     });
+
+    // console.log(event)
+    event.target.classList.add('active-collcetion-button');
   }
 
   function removeElement(array, elem) {
@@ -125,9 +129,9 @@ function MyVerticallyCenteredModal(props) {
           <div style={{ display: 'flex' }}>
             {props.collections.map((el) => {
               if (el.recipes_id != null && el.recipes_id.length > 0 && el.recipes_id.includes(`${props.id}`)) {
-                return <button key={el.id} className="collection-button" style={{ backgroundColor: '#1565c0', color: 'white' }} onClick={() => removeFromCollection(el.id, el.recipes_id)}>{el.name}</button>
+                return <button key={el.id} className="collection-button" style={{backgroundColor: '#1565c0', color: 'white'}} onClick={() => removeFromCollection(el.id, el.recipes_id)}>{el.name}</button>
               } else {
-                return <button key={el.id} className="collection-button" onClick={() => addToCollection(el.id, el.recipes_id)}>{el.name}</button>
+                return <button key={el.id} ref={buttonRef} className="collection-button" onClick={(event) => addToCollection(event, el.id, el.recipes_id)}>{el.name}</button>
               }
             })}
           </div>

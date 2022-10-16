@@ -9,7 +9,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import VerticalLinearStepper from '../components/VerticalLinearStepper';
 import Spinner from 'react-bootstrap/Spinner';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -27,29 +27,7 @@ function MyVerticallyCenteredModal(props) {
         return items.push({ label: ind, description: el })
     })
 
-    const removeFromCollection = async (id, recipes) => {
-        if (recipes != null) {
-            recipes.pop(`${props.id}`)
-            const editCollection = {
-                id: id,
-                recipes_id: recipes
-            }
-
-            await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    operation: 'update',
-                    schema: 'onlypans',
-                    table: 'collections',
-                    records: [editCollection]
-                })
-            });
-        }
-    }
-
+    
     return (
         <Modal
             {...props}
@@ -145,6 +123,7 @@ function CollectionPage({ removeToken }) {
     const [addFormDetails, setAddFormDetails] = useState(formAddInitialDetails);
     const [spinner, setSpinner] = useState(0);
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
     let { id } = useParams();
 
 
@@ -374,31 +353,56 @@ function CollectionPage({ removeToken }) {
         setOpen(true);
     }
 
-    // --TODO-- onClick={() => deleteItem(element.id)} da se ubaci
-    
+    // HELPPER FUNCTION
+    function removeElement(array, elem) {
+        var index = array.indexOf(elem);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
+    }
+
     // REMOVE RECIPE FROM COLLCETION
-    // const deleteItem = async (id) => {
-    //     removeElement(shopList, item);
-    //     const data = {
-    //       id: userToken[0].id,
-    //       shop_list: shopList
-    //     }
-    //     await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       },
-    //       body: JSON.stringify({
-    //         operation: 'update',
-    //         schema: 'onlypans',
-    //         table: 'user',
-    //         records: [data]
-    //       })
-    //     });
-    
-    //     setItem('');
-    //     getShopList();
-    //   }
+    const deleteItem = async (id) => {
+        removeElement(collections.recipes_id, id);
+        const data = {
+            id: collections.id,
+            recipes_id: collections.recipes_id
+        }
+        await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                operation: 'update',
+                schema: 'onlypans',
+                table: 'collections',
+                records: [data]
+            })
+        });
+
+        getCollections();
+    }
+
+    // DELETE COLLECTION
+    const deleteCollection = async (event) => {
+        event.preventDefault();
+
+        await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                operation: 'delete',
+                schema: 'onlypans',
+                table: 'collections',
+                hash_values: [collections.id]
+            })
+        });
+
+        navigate('/collections')
+    }
 
     return (
         <div className='img-wrapper'>
@@ -414,7 +418,7 @@ function CollectionPage({ removeToken }) {
                     <div style={{ width: '25%' }}>
                         {(collections.recipes_id != null && collections.recipes_id.length > 0) && <button className="card-button-edit" style={{ backgroundColor: '#2776ff' }} onClick={() => setAddModalShow(true)}>Add new recipe</button>}
                         <button className="card-button-edit" style={{ width: '85%' }} onClick={() => setEditModalShow(true)}>Edit collcetion</button>
-                        <Link to='/collections' className="card-button-edit" style={{ backgroundColor: '#ff2776', width: '70%' }}>Delete collcetion</Link>
+                        <button className="card-button-edit" style={{ backgroundColor: '#ff2776', width: '70%' }} onClick={deleteCollection}>Delete collcetion</button>
                         <p style={{ color: '#688dc4', textAlign: 'left' }}>Created on {new Intl.DateTimeFormat('sr', { year: 'numeric', day: '2-digit', month: '2-digit' }).format(collections.__createdtime__)}</p>
                     </div>
                     {(collections.recipes_id == null || collections.recipes_id.length == 0) &&
@@ -429,13 +433,13 @@ function CollectionPage({ removeToken }) {
                     {(collections.recipes_id != null && collections.recipes_id.length > 0) &&
                         <div className='collection-recipes-div'>
                             {recipes.length && recipes.map(element => {
-                                return <div key={element.id} className='collection-recipes' onClick={() => openModal(element.id)}>
+                                return <div key={element.id} className='collection-recipes' >
                                     {/* <div><RiDeleteBin6Line size={20} color='red' className='delete-icon' /></div> */}
-                                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                        <h4 style={{ textAlign: 'left', display: 'inline' }}>{element.title}</h4>
-                                        <div style={{ display: 'inline' }} ><RiDeleteBin6Line size={20} color='red' className='delete-icon' /></div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <h4 style={{ textAlign: 'left', display: 'inline' }} onClick={() => openModal(element.id)}>{element.title}</h4>
+                                        <div style={{ display: 'inline' }} ><RiDeleteBin6Line size={20} color='red' className='delete-icon' onClick={() => deleteItem(element.id)} /></div>
                                     </div>
-                                    <p style={{ textAlign: 'left' }}>{element.description}</p>
+                                    <p style={{ textAlign: 'left' }} onClick={() => openModal(element.id)}>{element.description}</p>
                                 </div>
                             })}
                         </div>}
