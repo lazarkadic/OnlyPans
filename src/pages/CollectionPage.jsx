@@ -139,7 +139,12 @@ function CollectionPage({ removeToken }) {
 
     // GET COLLCETION WITH ID = id
     const getCollections = async () => {
-        const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections/page/${id}`)
+        const response = await fetch(`https://functions-cloud1-onlypans.harperdbcloud.com/local-api/collections/page/${id}`)//, {
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         "Authorization": "Basic YWRtaW46Y2hhbmdlbXlwYXNz"
+        //     }
+        // })
         const newCollections = await response.json();
         setCollections(newCollections[0]);
         setEditFormDetails({
@@ -154,7 +159,8 @@ function CollectionPage({ removeToken }) {
         const responseRecipes = await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/recipe/ids', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization": process.env.REACT_APP_AUTH
             },
             body: JSON.stringify({
                 operation: 'search_by_hash',

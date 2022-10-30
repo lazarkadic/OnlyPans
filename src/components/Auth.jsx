@@ -83,7 +83,8 @@ function Auth({ setToken }) {
       const response = await fetch('https://functions-cloud1-onlypans.harperdbcloud.com/local-api/user', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "Authorization": "Basic YWRtaW46Y2hhbmdlbXlwYXNz"
         },
         body: JSON.stringify({
           operation: 'insert',
@@ -101,6 +102,7 @@ function Auth({ setToken }) {
         password: formDetails.password,
         first_name: formDetails.first_name
       }
+      console.log('prosla autorizacija!')
       if (result.length !== 0)
         setToken([token])
     }
